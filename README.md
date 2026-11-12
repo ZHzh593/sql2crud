@@ -7,6 +7,8 @@ Spring Boot 3.3.4 + MyBatis(XML) 后端、四套可选前端、建库脚本、�
 
 Windows 桌面程序，**单文件 11.2 MB，免安装、免 Python 环境、双击即用**。
 
+![主界面 v1.4](screenshots/17-gui-v14.png)
+
 ---
 
 ## 目录
@@ -24,8 +26,10 @@ Windows 桌面程序，**单文件 11.2 MB，免安装、免 Python 环境、双
 - [可视化画布设计器](#可视化画布设计器)
 - [命令行模式与完整参数](#命令行模式与完整参数)
 - [支持的 SQL 语法与类型映射](#支持的-sql-语法与类型映射)
+- [示例文件](#示例文件)
 - [已知限制](#已知限制)
 - [常见问题](#常见问题)
+- [更新日志](#更新日志)
 - [第三方资源与许可](#第三方资源与许可)
 
 ---
@@ -82,6 +86,8 @@ Get-FileHash .\sql2java.exe -Algorithm SHA256
 
 程序是四个页签，从左到右就是流程。
 
+![四页签主界面](screenshots/00-gui.png)
+
 ### ① 表结构
 
 1. 点「浏览…」选中 `.sql` 文件
@@ -94,6 +100,8 @@ Get-FileHash .\sql2java.exe -Algorithm SHA256
 - 勾选功能开关（Lombok / 分页 / 文件上传 / 报表 / 前端页面）
 - 填「外观」：页面标题、主题色（有取色器和 7 个常用色块）
 - 点开五个齿轮做细粒度配置（见下方[齿轮章节](#五个齿轮细粒度配置)）
+
+![功能与配置页](screenshots/08-gui-config.png)
 
 ### ③ 生成
 
@@ -146,6 +154,12 @@ out/<artifact>/
 
 **不勾「前后端分离」** 时退化为单工程：前端塞进 `backend/src/main/resources/static/`，`mvn spring-boot:run` 一个地址全解决。
 
+生成出来的列表页和报表页：
+
+![生成的列表页](screenshots/01-generated-page.png)
+
+![生成的报表页](screenshots/02-report.png)
+
 ---
 
 ## 每张表自动生成的接口
@@ -180,6 +194,8 @@ out/<artifact>/
 ## 五个齿轮：细粒度配置
 
 全部收在「② 功能与配置」页，点齿轮弹出。
+
+![五个齿轮](screenshots/12-gui-gears.png)
 
 ### ⚙ 分页
 
@@ -231,6 +247,18 @@ out/<artifact>/
 - 按钮：默认白底描边，主按钮主题色填充
 - 底部灰字标注生成器与上传限制
 
+Vue 离线版：
+
+![Vue 离线版](screenshots/07-vue-static.png)
+
+jQuery 版：
+
+![jQuery 版](screenshots/05-jquery.png)
+
+原生 HTML 版：
+
+![原生 HTML 版](screenshots/06-html.png)
+
 **换配色只改一个地方**：工具里「主题色」填 `#e8590c`，重新生成，整套界面跟着变。
 
 ---
@@ -263,6 +291,12 @@ PaperJoinController.java  GET /api/paper/join/page
 
 三套前端左侧菜单都会多一项「联表 · t_paper + t_code」，点进去是**只读列表**（分页 + 关键字），没有增删改。
 
+![联表页 Vue 版](screenshots/11-vue-join.png)
+
+![联表页 jQuery 版](screenshots/09-jquery-join.png)
+
+![联表页原生 HTML 版](screenshots/10-html-join.png)
+
 > `count` 与 `list` 共用同一段 `<sql id="Where">`，保证分页不会算出空页。
 
 ---
@@ -284,6 +318,20 @@ POST /api/login   {"username":"admin","password":"123456"}
 - 未登录进不去
 - 登录后 localStorage 记住，右上角显示「欢迎，xxx　退出」
 - 空账号提示「请输入账号」，密码错提示「账号或密码错误」
+
+![登录页](screenshots/13-exam-login.png)
+
+登录后的列表页（分页 + 隔行变色 + 操作列）：
+
+![登录后的列表页](screenshots/14-exam-list.png)
+
+新增 / 修改表单：
+
+![新增修改表单](screenshots/15-exam-form.png)
+
+jQuery 版同样有登录遮罩：
+
+![jQuery 版登录后](screenshots/16-exam-jquery.png)
 
 > 登录逻辑是**明文比对用户表**，定位是演示/课设用，不是生产级认证。
 
@@ -311,6 +359,10 @@ src/main/resources/static/js/designer.js    Vue 逻辑（列表 + 保存）
 layout.json                                 布局存档（可再导入）
 ```
 
+生成出来的画布页面：
+
+![画布生成的页面](screenshots/03-designer-page.png)
+
 坐标怎么变成前端——就是一行 style：
 
 ```html
@@ -323,7 +375,7 @@ layout.json                                 布局存档（可再导入）
 - 按钮 → `@click="save"`，POST 到 `/api/{表}/save`
 - 表格 → `v-for` 渲染 `/api/{表}/page` 的 `rows`
 
-布局 JSON 也可以手写：
+布局 JSON 也可以手写（完整示例见 [`samples/layout_paper.json`](samples/layout_paper.json)）：
 
 ```json
 {
@@ -355,7 +407,7 @@ sql2java.exe --cli 输入.sql 输出目录 ^
   --separate 1 --vue-port 5173 --jquery-port 8081 --html-port 8082 --static-port 8083 ^
   --login 1 ^
   --join "t_paper:type:t_code:id:code_name" ^
-  --layout layout_paper.json
+  --layout samples\layout_paper.json
 ```
 
 | 参数 | 说明 |
@@ -411,6 +463,27 @@ sql2java.exe --cli 输入.sql 输出目录 ^
 
 ---
 
+## 示例文件
+
+仓库里带两个可直接用的示例，方便第一次跑通：
+
+| 文件 | 内容 |
+|---|---|
+| [`samples/paper.sql`](samples/paper.sql) | 论文管理系统建库脚本（`t_user` / `t_code` / `t_paper` 三张表 + 测试数据），可直接喂给工具 |
+| [`samples/layout_paper.json`](samples/layout_paper.json) | 画布布局样例（7 个控件：标签 / 输入框 / 下拉 / 按钮 / 表格，已绑定字段） |
+
+快速试跑：
+
+```bat
+mysql -uroot -p < samples\paper.sql
+sql2java.exe --cli samples\paper.sql out\demo --artifact demo --pkg com.example.demo ^
+  --db paper_db --pagination 1 --upload 1 --report 1 --login 1 ^
+  --join "t_paper:type:t_code:id:code_name" ^
+  --layout samples\layout_paper.json
+```
+
+---
+
 ## 已知限制
 
 - **只做单表 CRUD + 一层多对一联表**（主表外键 → 从表主键）。一对多、多对多未支持
@@ -435,6 +508,20 @@ sql2java.exe --cli 输入.sql 输出目录 ^
 | 数据库连不上 | 「② 功能与配置」里的库名/账号密码要和你本机一致 |
 | 前端起不来 | `frontend-vue` 需要先 `npm install`；离线环境直接用 `frontend-static` |
 | 双击后没有任何窗口 | 检查是否被杀软拦截；程序是 x64，32 位系统无法运行 |
+
+---
+
+## 更新日志
+
+每个版本改了什么、修了哪些 bug、验收到哪一步，都记在 [**CHANGELOG.md**](CHANGELOG.md)。
+
+| 版本 | 主题 | 关键能力 |
+|---|---|---|
+| v1.0 | 能生成 | SQL 解析 + Spring Boot + Vue 单页 + CLI |
+| v1.1 | 省事 | 自动开 IDEA、画布布局 |
+| v1.2 | 可配置 | 标题/主题色/分页/上传配置、前后端分离、三套前端 |
+| v1.3 | 成体系 | 齿轮配置、独立前端项目、联表查询、8 个 bug 修复 |
+| v1.4 | 打磨 | 齿轮收口、取色器、画布缩放、登录页、机试题验收 |
 
 ---
 
